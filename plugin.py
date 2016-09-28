@@ -116,12 +116,12 @@ class BurpExtender(IBurpExtender, IScannerCheck, IHttpListener, IProxyListener, 
         if re.search(r'[\r|\n](?i)Location:(.*?)yyyyyyyyy(.*?)[\r|\n]', response_str1) is not None:
         	textIssue = textIssue+"Location: header injection<br>"
         	flag1 = 1
-        payload_array = ["'\"", "<", ">", "\\\\'ttt", "\\\\\"ggg"]
+        payload_array = ["'\"", "<", ">", "\\\\'ttt", "\\\\\"ggg", "\\"]
         payload_all = ""
         rand_str = "jjjjjjj"
         for payload in payload_array:
         	payload_all = payload_all+rand_str+payload
-        payload_all = payload_all+rand_str
+        #payload_all = payload_all+rand_str
         payload_bytes = burp_helpers.stringToBytes(payload_all)
         attack = burp_callbacks.makeHttpRequest(baseRequestResponse.getHttpService(), insertionPoint.buildRequest(payload_bytes))
         response = attack.getResponse()
@@ -130,7 +130,7 @@ class BurpExtender(IBurpExtender, IScannerCheck, IHttpListener, IProxyListener, 
         non_encoded_symbols = ""
         severity = "Low"
         for check_payload in payload_array:
-			if_found_payload = rand_str+check_payload+rand_str
+			if_found_payload = rand_str+check_payload
 			if if_found_payload in response_str:
 				non_encoded_symbols = non_encoded_symbols+"   "+check_payload.replace('<', '&lt;')
 				score = score+1
